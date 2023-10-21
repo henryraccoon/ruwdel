@@ -21,6 +21,73 @@ app.get('/api/v1/systems', (req, res) => {
   });
 });
 
+app.get('/api/v1/systems/:system', (req, res) => {
+  const rawSystem = Papa.parse(
+    fs.readFileSync(`${__dirname}/dev-data/data/by-system.csv`, 'utf8'),
+    {
+      header: true,
+    }
+  );
+
+  const bySystem = rawSystem.data.filter((field) => {
+    if (field.system && req.params.system) {
+      return field.system
+        .toLowerCase()
+        .includes(req.params.system.toLowerCase());
+    }
+    return false;
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: bySystem.length,
+    data: {
+      bySystem,
+    },
+  });
+});
+
+// app.get('/api/v1/systems/:system', async (req, res) => {
+//   try {
+//     const csvData = await fs.promises.readFile(
+//       `${__dirname}/dev-data/data/by-system.csv`,
+//       'utf8'
+//     );
+//     const rawSystem = Papa.parse(csvData, { header: true });
+
+//     if (rawSystem.errors.length === 0) {
+//       const bySystem = rawSystem.data.filter((field) => {
+//         if (field.system && req.params.system) {
+//           return field.system
+//             .toLowerCase()
+//             .includes(req.params.system.toLowerCase());
+//         }
+//         return false;
+//       });
+
+//       res.status(200).json({
+//         status: 'success',
+//         results: bySystem.length,
+//         data: {
+//           bySystem,
+//         },
+//       });
+//     } else {
+//       res.status(500).json({
+//         status: 'error',
+//         message: 'Error parsing CSV file',
+//         errors: rawSystem.errors,
+//       });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({
+//       status: 'error',
+//       message: 'An error occurred while processing the request',
+//     });
+//   }
+// });
+
 app.get('/api/v1/dates/:yyyymmdd', (req, res) => {
   const csv = fs.readFileSync(
     `${__dirname}/dev-data/data/daily-systems/${req.params.yyyymmdd}.csv`,
