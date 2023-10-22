@@ -47,46 +47,49 @@ app.get('/api/v1/systems/:system', (req, res) => {
   });
 });
 
-// app.get('/api/v1/systems/:system', async (req, res) => {
-//   try {
-//     const csvData = await fs.promises.readFile(
-//       `${__dirname}/dev-data/data/by-system.csv`,
-//       'utf8'
-//     );
-//     const rawSystem = Papa.parse(csvData, { header: true });
+app.get('/api/v1/classes/:class', (req, res) => {
+  const rawSystem = Papa.parse(
+    fs.readFileSync(`${__dirname}/dev-data/data/by-system.csv`, 'utf8'),
+    {
+      header: true,
+    }
+  );
 
-//     if (rawSystem.errors.length === 0) {
-//       const bySystem = rawSystem.data.filter((field) => {
-//         if (field.system && req.params.system) {
-//           return field.system
-//             .toLowerCase()
-//             .includes(req.params.system.toLowerCase());
-//         }
-//         return false;
-//       });
+  const listOfClasses = Papa.parse(
+    fs.readFileSync(`${__dirname}/dev-data/data/classes.csv`, 'utf8'),
+    {
+      header: true,
+    }
+  );
+  const arrayOfSystems = [];
 
-//       res.status(200).json({
-//         status: 'success',
-//         results: bySystem.length,
-//         data: {
-//           bySystem,
-//         },
-//       });
-//     } else {
-//       res.status(500).json({
-//         status: 'error',
-//         message: 'Error parsing CSV file',
-//         errors: rawSystem.errors,
-//       });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({
-//       status: 'error',
-//       message: 'An error occurred while processing the request',
-//     });
-//   }
-// });
+  const systemsInClass = listOfClasses.data.filter((field) => {
+    if (field.class && req.params.class) {
+      if (
+        field.class.toLowerCase().includes(req.params.class.toLowerCase()) &&
+        !field.class
+          .toLowerCase()
+          .includes(`Anti-${req.params.class}`.toLowerCase())
+      ) {
+        return arrayOfSystems.push(field.system);
+      }
+    }
+    return false;
+  });
+
+  const systemsByClass = rawSystem.data.filter((field) =>
+    arrayOfSystems.includes(field.system)
+  );
+
+  res.status(200).json({
+    status: 'success',
+    results: systemsByClass.length,
+    systems: arrayOfSystems,
+    data: {
+      systemsByClass,
+    },
+  });
+});
 
 app.get('/api/v1/dates/:yyyymmdd', (req, res) => {
   const csv = fs.readFileSync(
