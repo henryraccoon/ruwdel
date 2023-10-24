@@ -1,34 +1,53 @@
 const fs = require('fs');
 const express = require('express');
 const Papa = require('papaparse');
+const morgan = require('morgan');
 
 const app = express();
+app.use(express.json());
 
-// app.get('/', (req, res) => {
-//   res.status(200).json({ message: 'Hello from the server.', app: 'ruwdel' });
-// });
+// 1. Middlewares
 
-const systems = JSON.parse(
+app.use(morgan('dev'));
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
+const systemsTotals = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/systems-total.json`)
 );
 
-app.get('/api/v1/systems', (req, res) => {
+const rawSystem = Papa.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/by-system.csv`, 'utf8'),
+  {
+    header: true,
+    skipEmptyLines: true,
+  }
+);
+
+const listOfClasses = Papa.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/classes.csv`, 'utf8'),
+  {
+    header: true,
+    skipEmptyLines: true,
+  }
+);
+
+// 2. Route Handlers
+
+const getTotals = (req, res) => {
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     data: {
-      systems,
+      systemsTotals,
     },
   });
-});
+};
 
-app.get('/api/v1/systems/:system', (req, res) => {
-  const rawSystem = Papa.parse(
-    fs.readFileSync(`${__dirname}/dev-data/data/by-system.csv`, 'utf8'),
-    {
-      header: true,
-    }
-  );
-
+const getSystems = (req, res) => {
   const bySystem = rawSystem.data.filter((field) => {
     if (field.system && req.params.system) {
       return field.system
@@ -40,27 +59,15 @@ app.get('/api/v1/systems/:system', (req, res) => {
 
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: bySystem.length,
     data: {
       bySystem,
     },
   });
-});
+};
 
-app.get('/api/v1/classes/:class', (req, res) => {
-  const rawSystem = Papa.parse(
-    fs.readFileSync(`${__dirname}/dev-data/data/by-system.csv`, 'utf8'),
-    {
-      header: true,
-    }
-  );
-
-  const listOfClasses = Papa.parse(
-    fs.readFileSync(`${__dirname}/dev-data/data/classes.csv`, 'utf8'),
-    {
-      header: true,
-    }
-  );
+const getSystemsByClass = (req, res) => {
   const arrayOfSystems = [];
 
   const systemsInClass = listOfClasses.data.filter((field) => {
@@ -83,48 +90,62 @@ app.get('/api/v1/classes/:class', (req, res) => {
 
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: systemsByClass.length,
     systems: arrayOfSystems,
     data: {
       systemsByClass,
     },
   });
-});
+};
 
-app.get('/api/v1/dates/:yyyymmdd', (req, res) => {
-  const csv = fs.readFileSync(
-    `${__dirname}/dev-data/data/daily-systems/${req.params.yyyymmdd}.csv`,
-    'utf8'
+const getSystemsByDate = (req, res) => {
+  const SystemsByDate = Papa.parse(
+    fs.readFileSync(
+      `${__dirname}/dev-data/data/daily-systems/${req.params.yyyymmdd}.csv`,
+      'utf8'
+    ),
+    {
+      header: true,
+      skipEmptyLines: true,
+    }
   );
 
-  const dateSystems = Papa.parse(csv, {
-    header: true,
-  });
-
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
+    results: SystemsByDate.data.length,
 
     data: {
-      systems: dateSystems,
+      systems: SystemsByDate.data,
     },
   });
-});
+};
 
-app.get('/api/v1/list', (req, res) => {
-  const csv = fs.readFileSync(`${__dirname}/dev-data/data/classes.csv`, 'utf8');
-
-  const classesToSystems = Papa.parse(csv, {
-    header: true,
-  });
-
+const getListSystemsToClasses = (req, res) => {
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
 
     data: {
-      systems: classesToSystems,
+      systemsToClasses: listOfClasses.data,
     },
   });
-});
+};
+
+// 3. Routes
+
+app.get('/api/v1/systems', getTotals);
+
+app.get('/api/v1/systems/:system', getSystems);
+
+app.get('/api/v1/classes/:class', getSystemsByClass);
+
+app.get('/api/v1/dates/:yyyymmdd', getSystemsByDate);
+
+app.get('/api/v1/list', getListSystemsToClasses);
+
+// 4) Start Server
 
 const port = 5000;
 app.listen(port, () => {
