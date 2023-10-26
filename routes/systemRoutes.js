@@ -7,5 +7,5 @@ router.get('/system/:systemName', systemController.getSystems);
 router.get('/class/:className', systemController.getSystemsByClass);
 router.get('/date/:yyyymmdd', systemController.getSystemsByDate);
 router.get('/list', systemController.getListSystemsToClasses);
-
+ 
 module.exports = router;
