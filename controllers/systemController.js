@@ -1,121 +1,115 @@
 const express = require('express');
-const fs = require('fs');
-const Papa = require('papaparse');
+const AllSystem = require('./../models/allSystemModel');
+const TotalSystem = require('../models/totalSystemModel');
+const SystemsToClasses = require('../models/systemsToClassesModel');
+const { DailySystem } = require('../models/dailySystemModel');
 
-const systemsTotals = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/systems-total.json`)
-);
+exports.getTotals = async (req, res) => {
+  try {
+    const totals = await TotalSystem.find();
 
-const rawSystem = Papa.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/by-system.csv`, 'utf8'),
-  {
-    header: true,
-    skipEmptyLines: true,
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      data: {
+        totals,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
   }
-);
+};
 
-const listOfClasses = Papa.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/classes.csv`, 'utf8'),
-  {
-    header: true,
-    skipEmptyLines: true,
+exports.getSystems = async (req, res) => {
+  try {
+    const query = req.params.systemName;
+    const bySystem = await AllSystem.find({ system: new RegExp(query, 'i') });
+
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: bySystem.length,
+      data: {
+        bySystem,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
   }
-);
-
-exports.getTotals = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    data: {
-      systemsTotals,
-    },
-  });
 };
 
-exports.getSystems = (req, res) => {
-  const bySystem = rawSystem.data.filter((field) => {
-    if (field.system && req.params.systemName) {
-      return field.system
-        .toLowerCase()
-        .includes(req.params.systemName.toLowerCase());
-    }
-    return false;
-  });
+exports.getSystemsByClass = async (req, res) => {
+  try {
+    const list = await SystemsToClasses.find({
+      class: new RegExp(req.params.className, 'i'),
+    });
+    console.log(list[0].systems);
+    const regexQueries = list[0].systems.map((name) => new RegExp(name, 'i'));
 
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: bySystem.length,
-    data: {
-      bySystem,
-    },
-  });
+    const systemsByClass = await AllSystem.find({
+      system: { $in: regexQueries },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: systemsByClass.length,
+      systems: list.systems,
+      data: {
+        systemsByClass,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getSystemsByClass = (req, res) => {
-  const arrayOfSystems = [];
+exports.getSystemsByDate = async (req, res) => {
+  try {
+    const systemsByDate = await DailySystem.find({ date: req.params.yyyymmdd });
 
-  const systemsInClass = listOfClasses.data.filter((field) => {
-    if (field.class && req.params.className) {
-      if (
-        field.class
-          .toLowerCase()
-          .includes(req.params.className.toLowerCase()) &&
-        !field.class
-          .toLowerCase()
-          .includes(`Anti-${req.params.className}`.toLowerCase())
-      ) {
-        return arrayOfSystems.push(field.system);
-      }
-    }
-    return false;
-  });
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: systemsByDate[0].systems.length,
 
-  const systemsByClass = rawSystem.data.filter((field) =>
-    arrayOfSystems.includes(field.system)
-  );
-
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: systemsByClass.length,
-    systems: arrayOfSystems,
-    data: {
-      systemsByClass,
-    },
-  });
+      data: {
+        systems: systemsByDate[0].systems,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getSystemsByDate = (req, res) => {
-  const SystemsByDate = Papa.parse(
-    fs.readFileSync(
-      `${__dirname}/../dev-data/data/daily-systems/${req.params.yyyymmdd}.csv`,
-      'utf8'
-    ),
-    {
-      header: true,
-      skipEmptyLines: true,
-    }
-  );
+exports.getListSystemsToClasses = async (req, res) => {
+  try {
+    const list = await SystemsToClasses.find();
 
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: SystemsByDate.data.length,
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
 
-    data: {
-      systems: SystemsByDate.data,
-    },
-  });
-};
-
-exports.getListSystemsToClasses = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-
-    data: {
-      systemsToClasses: listOfClasses.data,
-    },
-  });
+      data: {
+        systemsToClasses: list,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
