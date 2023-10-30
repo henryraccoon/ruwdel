@@ -6,7 +6,13 @@ const { DailySystem } = require('../models/dailySystemModel');
 
 exports.getTotals = async (req, res) => {
   try {
-    const totals = await TotalSystem.find();
+    const queryObj = { ...req.query };
+    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    excludeFields.forEach((el) => delete queryObj[el]);
+
+    const query = TotalSystem.find(queryObj);
+
+    const totals = await query;
 
     res.status(200).json({
       status: 'success',
@@ -25,8 +31,15 @@ exports.getTotals = async (req, res) => {
 
 exports.getSystems = async (req, res) => {
   try {
-    const query = req.params.systemName;
-    const bySystem = await AllSystem.find({ system: new RegExp(query, 'i') });
+    const querySystem = req.params.systemName;
+    const queryObj = { ...req.query };
+    queryObj.system = new RegExp(querySystem, 'i');
+    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    excludeFields.forEach((el) => delete queryObj[el]);
+
+    const query = AllSystem.find(queryObj);
+
+    const bySystem = await query;
 
     res.status(200).json({
       status: 'success',
@@ -49,12 +62,17 @@ exports.getSystemsByClass = async (req, res) => {
     const list = await SystemsToClasses.find({
       class: new RegExp(req.params.className, 'i'),
     });
-    console.log(list[0].systems);
+
     const regexQueries = list[0].systems.map((name) => new RegExp(name, 'i'));
 
-    const systemsByClass = await AllSystem.find({
-      system: { $in: regexQueries },
-    });
+    const queryObj = { ...req.query };
+    queryObj.system = { $in: regexQueries };
+    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    excludeFields.forEach((el) => delete queryObj[el]);
+
+    const query = AllSystem.find(queryObj);
+
+    const systemsByClass = await query;
 
     res.status(200).json({
       status: 'success',
