@@ -2,132 +2,125 @@ const express = require('express');
 const AllSystem = require('./../models/allSystemModel');
 const TotalSystem = require('../models/totalSystemModel');
 const SystemsToClasses = require('../models/systemsToClassesModel');
-const { DailySystem } = require('../models/dailySystemModel');
+const System = require('../models/dailySystemModel');
+const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
-exports.getTotals = async (req, res) => {
-  try {
-    const queryObj = { ...req.query };
-    const excludeFields = ['page', 'sort', 'limit', 'fields'];
-    excludeFields.forEach((el) => delete queryObj[el]);
+exports.getTotals = catchAsync(async (req, res, next) => {
+  const queryObj = { ...req.query };
 
-    const query = TotalSystem.find(queryObj);
+  const query = TotalSystem.find(queryObj);
 
-    const totals = await query;
+  const totals = await query;
 
-    res.status(200).json({
-      status: 'success',
-      requestedAt: req.requestTime,
-      data: {
-        totals,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err,
-    });
+  res.status(200).json({
+    status: 'success',
+    requestedAt: req.requestTime,
+    data: {
+      totals,
+    },
+  });
+});
+
+exports.getSystems = catchAsync(async (req, res, next) => {
+  const querySystem = req.params.systemName;
+  const queryObj = { ...req.query };
+  queryObj.system = new RegExp(querySystem, 'i');
+
+  const query = AllSystem.find(queryObj);
+
+  const bySystem = await query;
+
+  if (bySystem.length < 1) {
+    return next(
+      new AppError(
+        `Oops! Nothing was found. Please double check if the system name is correct. You can find all system names at /api/v1/systems/list`,
+        404
+      )
+    );
   }
-};
 
-exports.getSystems = async (req, res) => {
-  try {
-    const querySystem = req.params.systemName;
-    const queryObj = { ...req.query };
-    queryObj.system = new RegExp(querySystem, 'i');
-    const excludeFields = ['page', 'sort', 'limit', 'fields'];
-    excludeFields.forEach((el) => delete queryObj[el]);
+  res.status(200).json({
+    status: 'success',
+    requestedAt: req.requestTime,
+    results: bySystem.length,
+    data: {
+      bySystem,
+    },
+  });
+});
 
-    const query = AllSystem.find(queryObj);
-
-    const bySystem = await query;
-
-    res.status(200).json({
-      status: 'success',
-      requestedAt: req.requestTime,
-      results: bySystem.length,
-      data: {
-        bySystem,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err,
-    });
+exports.getSystemsByClass = catchAsync(async (req, res, next) => {
+  const list = await SystemsToClasses.find({
+    class: new RegExp(req.params.className, 'i'),
+  });
+  if (list.length < 1) {
+    return next(
+      new AppError(
+        `Class ${req.params.className} not found. Please check list of classes at /api/v1/systems/list`,
+        404
+      )
+    );
   }
-};
+  const regexQueries = list[0].systems.map((name) => new RegExp(name, 'i'));
 
-exports.getSystemsByClass = async (req, res) => {
-  try {
-    const list = await SystemsToClasses.find({
-      class: new RegExp(req.params.className, 'i'),
-    });
+  const queryObj = { ...req.query };
+  queryObj.system = { $in: regexQueries };
 
-    const regexQueries = list[0].systems.map((name) => new RegExp(name, 'i'));
+  const query = AllSystem.find(queryObj);
 
-    const queryObj = { ...req.query };
-    queryObj.system = { $in: regexQueries };
-    const excludeFields = ['page', 'sort', 'limit', 'fields'];
-    excludeFields.forEach((el) => delete queryObj[el]);
+  const systemsByClass = await query;
 
-    const query = AllSystem.find(queryObj);
+  res.status(200).json({
+    status: 'success',
+    requestedAt: req.requestTime,
+    results: systemsByClass.length,
+    systems: list.systems,
+    data: {
+      systemsByClass,
+    },
+  });
+});
 
-    const systemsByClass = await query;
+exports.getSystemsByDate = catchAsync(async (req, res, next) => {
+  const queryObj = { ...req.query };
+  if (req.query.system) queryObj.system = new RegExp(req.query.system, 'i');
 
-    res.status(200).json({
-      status: 'success',
-      requestedAt: req.requestTime,
-      results: systemsByClass.length,
-      systems: list.systems,
-      data: {
-        systemsByClass,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err,
-    });
+  const query = System.find(queryObj);
+
+  const systemsByDate = await query;
+
+  if (systemsByDate.length < 1) {
+    return next(
+      new AppError(
+        `Oops! Nothing was found. Please double check if the date is in format mm/dd/yyyy and if the date is in the period between 02/24/2022 and ${new Date(
+          Date.now()
+        ).toLocaleDateString('en-US')}`,
+        404
+      )
+    );
   }
-};
 
-exports.getSystemsByDate = async (req, res) => {
-  try {
-    const systemsByDate = await DailySystem.find({ date: req.params.yyyymmdd });
+  res.status(200).json({
+    status: 'success',
+    requestedAt: req.requestTime,
+    results: systemsByDate.length,
 
-    res.status(200).json({
-      status: 'success',
-      requestedAt: req.requestTime,
-      results: systemsByDate[0].systems.length,
+    data: {
+      systems: systemsByDate,
+    },
+  });
+});
 
-      data: {
-        systems: systemsByDate[0].systems,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err,
-    });
-  }
-};
+exports.getListSystemsToClasses = catchAsync(async (req, res, next) => {
+  const list = await SystemsToClasses.find();
 
-exports.getListSystemsToClasses = async (req, res) => {
-  try {
-    const list = await SystemsToClasses.find();
+  res.status(200).json({
+    status: 'success',
+    requestedAt: req.requestTime,
 
-    res.status(200).json({
-      status: 'success',
-      requestedAt: req.requestTime,
-
-      data: {
-        systemsToClasses: list,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err,
-    });
-  }
-};
+    data: {
+      systemsToClasses: list,
+    },
+  });
+});

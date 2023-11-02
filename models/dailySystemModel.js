@@ -17,17 +17,11 @@ const systemSchema = new mongoose.Schema({
   url: {
     type: String,
   },
-});
-
-// main schema
-const dailySystemSchema = new mongoose.Schema({
-  date: {
+  Date: {
     type: String,
   },
-  systems: [systemSchema],
 });
 
 const System = mongoose.model('System', systemSchema);
-const DailySystem = mongoose.model('DailySystem', dailySystemSchema);
 
-module.exports = { System, DailySystem };
+module.exports = System;

@@ -3,7 +3,7 @@ const AllSystem = require('./models/allSystemModel');
 const TotalSystem = require('./models/totalSystemModel');
 const SystemsToClasses = require('./models/systemsToClassesModel');
 // const System = require('./models/dailySystemModel');
-const { System, DailySystem } = require('./models/dailySystemModel');
+const System = require('./models/dailySystemModel');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const axios = require('axios');
@@ -40,7 +40,7 @@ const importAllSystemData = async () => {
   }
 };
 
-importAllSystemData();
+// importAllSystemData();
 
 ///////////////TOTALS
 
@@ -61,7 +61,7 @@ const importTotalsData = async () => {
   }
 };
 
-importTotalsData();
+// importTotalsData();
 
 //////DAILY
 
@@ -87,10 +87,6 @@ const importDailyData = async () => {
 
       const systemInstance = await System.create(parsedData.data);
 
-      await DailySystem.create({
-        date: `${file.name.split('.')[0]}`,
-        systems: systemInstance,
-      });
       console.log(`File: ${file.name} successfully loaded.`);
     }
   } catch (error) {
@@ -98,7 +94,7 @@ const importDailyData = async () => {
   }
 };
 
-importDailyData();
+// importDailyData();
 
 ////// CLASSES LIST
 
@@ -147,3 +143,5 @@ const deleteData = async () => {
     console.log(err);
   }
 };
+
+process.exit(1);
