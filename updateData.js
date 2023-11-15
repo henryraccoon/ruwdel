@@ -94,7 +94,7 @@ const importDailyData = async () => {
   }
 };
 
-// importDailyData();
+importDailyData();
 
 ////// CLASSES LIST
 
@@ -144,4 +144,4 @@ const deleteData = async () => {
   }
 };
 
-process.exit(1);
+// process.exit(1);

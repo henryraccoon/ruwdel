@@ -18,6 +18,8 @@ const allSystemSchema = new mongoose.Schema({
   },
 });
 
+allSystemSchema.index({ system: 1 });
+
 const AllSystem = mongoose.model('AllSystem', allSystemSchema);
 
 module.exports = AllSystem;

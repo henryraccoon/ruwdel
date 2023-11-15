@@ -22,6 +22,8 @@ const systemSchema = new mongoose.Schema({
   },
 });
 
+systemSchema.index({ Date: 1 });
+
 const System = mongoose.model('System', systemSchema);
 
 module.exports = System;
