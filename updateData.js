@@ -15,8 +15,6 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 
-mongoose.connect(DB).then(() => console.log('DB connection sucessful.'));
-
 const owner = 'leedrake5';
 const repo = 'Russia-Ukraine';
 
@@ -24,17 +22,28 @@ const repo = 'Russia-Ukraine';
 
 const importAllSystemData = async () => {
   try {
-    const filePath = 'data/bySystem/Raw/Full/2023-10-28.csv';
+    const folderPath = 'data/bySystem/Raw/Full';
 
-    const apiUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+
     const response = await axios.get(apiUrl);
-    const allSystem = Papa.parse(response.data, {
+
+    const latestFile = response.data[response.data.length - 2];
+
+    const dataUrl = latestFile.download_url;
+    // const filePath = `${folderPath}/${latestFile.name}`;
+
+    // const dataUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
+
+    const dataResponse = await axios.get(dataUrl);
+
+    const allSystem = Papa.parse(dataResponse.data, {
       header: true,
       skipEmptyLines: true,
     });
 
     await AllSystem.create(allSystem.data);
-    console.log('Data successfully loaded.');
+    console.log('All Systems data successfully loaded.');
   } catch (err) {
     console.log(err);
   }
@@ -46,16 +55,27 @@ const importAllSystemData = async () => {
 
 const importTotalsData = async () => {
   try {
-    const filePath = 'data/byType/2023-10-25.csv';
+    const folderPath = 'data/byType';
 
-    const apiUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+
     const response = await axios.get(apiUrl);
-    const totals = Papa.parse(response.data, {
+
+    const latestFile = response.data[response.data.length - 1];
+
+    const dataUrl = latestFile.download_url;
+    // const filePath = `${folderPath}/${latestFile.name}`;
+
+    // const dataUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
+
+    const dataResponse = await axios.get(dataUrl);
+
+    const totals = Papa.parse(dataResponse.data, {
       header: true,
       skipEmptyLines: true,
     });
     await TotalSystem.create(totals.data);
-    console.log('Data successfully loaded.');
+    console.log('Total Systems data successfully loaded.');
   } catch (error) {
     console.error('Error:', error);
   }
@@ -70,31 +90,51 @@ const importDailyData = async () => {
     const folderPath = 'data/bySystem/Raw/Daily';
 
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+
     const response = await axios.get(apiUrl);
-    const files = response.data;
-    const csvFiles = files.filter(
-      (file) => file.type === 'file' && file.name.endsWith('.csv')
-    );
 
-    for (const file of csvFiles) {
-      const fileUrl = file.download_url;
-      const fileContent = (await axios.get(fileUrl)).data;
+    const latestFile = response.data[response.data.length - 1];
 
-      const parsedData = Papa.parse(fileContent, {
-        header: true,
-        skipEmptyLines: true,
-      });
+    const dataUrl = latestFile.download_url;
 
-      const systemInstance = await System.create(parsedData.data);
+    const dataResponse = await axios.get(dataUrl);
 
-      console.log(`File: ${file.name} successfully loaded.`);
-    }
+    const parsedData = Papa.parse(dataResponse.data, {
+      header: true,
+      skipEmptyLines: true,
+    });
+
+    const systemInstance = await System.create(parsedData.data);
+
+    console.log(`File: ${latestFile.name} successfully loaded.`);
+
+    /// in case i need to update All daily losses
+
+    // const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+    // const response = await axios.get(apiUrl);
+    // const files = response.data;
+    // const csvFiles = files.filter(
+    //   (file) => file.type === 'file' && file.name.endsWith('.csv')
+    // );
+
+    // for (const file of csvFiles) {
+    //   const fileUrl = file.download_url;
+    //   const fileContent = (await axios.get(fileUrl)).data;
+
+    //   const parsedData = Papa.parse(fileContent, {
+    //     header: true,
+    //     skipEmptyLines: true,
+    //   });
+    //   const systemInstance = await System.create(parsedData.data);
+
+    //   console.log(`File: ${file.name} successfully loaded.`);
+    // }
   } catch (error) {
     console.error('Error:', error);
   }
 };
 
-importDailyData();
+// importDailyData();
 
 ////// CLASSES LIST
 
@@ -144,4 +184,15 @@ const deleteData = async () => {
   }
 };
 
-// process.exit(1);
+const updateAllTheData = async () => {
+  await mongoose
+    .connect(DB)
+    .then(() => console.log('DB connection sucessful.'));
+  await deleteData();
+  await importAllSystemData();
+  await importTotalsData();
+  await importDailyData();
+  process.exit(0);
+};
+
+updateAllTheData();

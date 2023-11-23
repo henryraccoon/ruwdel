@@ -45,7 +45,7 @@ exports.getSystems = catchAsync(async (req, res, next) => {
     requestedAt: req.requestTime,
     results: bySystem.length,
     data: {
-      bySystem,
+      systems: bySystem,
     },
   });
 });
@@ -77,7 +77,7 @@ exports.getSystemsByClass = catchAsync(async (req, res, next) => {
     results: systemsByClass.length,
     systems: list.systems,
     data: {
-      systemsByClass,
+      systems: systemsByClass,
     },
   });
 });

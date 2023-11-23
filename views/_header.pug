@@ -1,0 +1,17 @@
+header.header
+    // Left side (search button)
+    div.header-left
+        button.search-button.button(type="button", onclick="window.location.href='/search';") Search
+
+    
+    div.header-center
+        a(href='/')
+            img.logo(src='img/logo.png', alt='Logo')
+
+    // Right side (buttons)
+    div.header-right
+        button.about-button.button(type="button", onclick="window.location.href='#';") About
+        button.api-docs-button.button(type="button", onclick="window.location.href='#';") API Docs
+        button.login-button.button(type="button", onclick="window.location.href='/login';") Log In
+        button.signup-button.button.signup-button(type="button", onclick="window.location.href='/signup';") Sign Up
+

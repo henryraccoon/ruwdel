@@ -1,0 +1,47 @@
+extends base
+
+block append head
+  script(src='/js/search.js')
+  
+
+block content
+  h2.page-title Search Page
+
+  .search-options
+    label
+      input(type='radio', id='system-radio', name='search-option', value='system', checked)
+      | Search by System
+    label
+      input(type='radio', id='class-radio', name='search-option', value='class')
+      | Search by Class
+    label
+      input(type='radio', id='date-radio' name='search-option', value='date')
+      | Search by Date
+
+  .search-input-container
+    input(type='text', id='search-input', placeholder='Enter search value')
+    button(type='button', id='btn-search') Search
+
+  .results-section
+    
+    //- each result in results
+    //-   .result-box
+    //-     if (result.url.startsWith('https://twitter.com/'))
+    //-       a(href=result.url, target='_blank') 
+    //-         img(src='img/x.png', alt='Twitter Icon')
+    //-       p Click to open X (Twitter) Post
+    //-     else
+    //-       a(href=result.url, target='_blank')
+    //-         img(src=result.url, alt='Image')
+    //-     p
+    //-       strong System Name:
+    //-       |  #{result.system}
+    //-     p
+    //-       strong Country:
+    //-       |  #{result.country}
+    //-     p
+    //-       strong Status:
+    //-       |  #{result.status}
+    //-     p
+    //-       strong Origin:
+    //-       |  #{result.origin}

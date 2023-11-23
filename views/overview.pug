@@ -1,0 +1,54 @@
+extends base
+
+block content
+    // Title
+    h2.page-title Total documented losses as of #{new Date().toLocaleDateString()}
+
+    // Tables
+    .country-table
+        // Russia Table
+        .table-container
+            h3.country-title Russia
+            table.overview-table
+                tr
+                    td.column-header Equipment
+                    td.loss-type Destroyed
+                    td.loss-type Damaged
+                    td.loss-type Abandoned
+                    td.loss-type Captured
+                    td.loss-type.bold Total
+
+                // Rows for different classes of equipment for Russia
+                each total in totalsRu
+                    tr
+                        td.equipment-category= total.equipment_type
+                        td.loss-data= total.destroyed
+                        td.loss-data= total.damaged 
+                        td.loss-data= total.abandoned
+                        td.loss-data= total.captured 
+                        td.loss-data.special-column.bold= total.type_total
+
+
+        // Ukraine Table
+        .table-container
+            h3.country-title Ukraine
+            table.overview-table
+                tr
+                    td.column-header Equipment
+                    td.loss-type Destroyed
+                    td.loss-type Damaged
+                    td.loss-type Abandoned
+                    td.loss-type Captured
+                    td.loss-type.bold Total
+
+                // Rows for different classes of equipment for Ukraine
+                each total in totalsUa
+                    tr
+                        td.equipment-category= total.equipment_type
+                        td.loss-data= total.destroyed
+                        td.loss-data= total.damaged 
+                        td.loss-data= total.abandoned
+                        td.loss-data= total.captured 
+                        td.loss-data.special-column.bold= total.type_total
+
+                
