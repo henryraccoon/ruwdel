@@ -18,6 +18,8 @@ body {
   color: #fff;
   padding: 8px 12px;
   border: none;
+  margin-left: 10px;
+  margin-right: 10px;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -203,7 +205,8 @@ button.signup-button:hover {
 
 /* LOG IN PAGE */
 
-.login-box {
+.login-box,
+.signup-box {
   text-align: center;
   max-width: 400px;
   margin: 50px auto;
@@ -213,26 +216,31 @@ button.signup-button:hover {
   background-color: #fff;
 }
 
-.login-box h2.page-title {
+.login-box h2.page-title,
+.signup-box h2.page-title {
   margin-top: 0;
 }
 
-.login-box form {
+.login-box form,
+.signup-box form {
   display: flex;
   flex-direction: column;
 }
 
-.login-box label {
+.login-box label,
+.signup-box label {
   margin-top: 10px;
 }
 
-.login-box input {
+.login-box input,
+.signup-box input {
   padding: 8px;
   margin-top: 5px;
   margin-bottom: 15px;
 }
 
-.login-box button {
+.login-box button,
+.signup-box button {
   background-color: #555;
   color: #fff;
   padding: 10px;

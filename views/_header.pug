@@ -2,6 +2,7 @@ header.header
     // Left side (search button)
     div.header-left
         button.search-button.button(type="button", onclick="window.location.href='/search';") Search
+        button.api-docs-button.button(type="button", onclick="window.location.href='#';") API Docs
 
     
     div.header-center
@@ -11,7 +12,7 @@ header.header
     // Right side (buttons)
     div.header-right
         button.about-button.button(type="button", onclick="window.location.href='#';") About
-        button.api-docs-button.button(type="button", onclick="window.location.href='#';") API Docs
+        
         if user
             span= user.name.split(' ')[0] 
             button.logout-button.button(type="button") Log Out

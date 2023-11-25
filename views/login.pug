@@ -4,7 +4,7 @@ block content
     .login-box
         h2.page-title Log into your account
 
-        form.form(action='/login', method='POST')
+        form.form_login(action='/login', method='POST')
             label(for='email') Email:
             input.form__input(type='email', id='email', name='email', placeholder='you@example.com', required)
 

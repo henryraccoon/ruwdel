@@ -22631,7 +22631,7 @@ var showAlert = exports.showAlert = function showAlert(type, msg) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.logout = exports.login = void 0;
+exports.signup = exports.logout = exports.login = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alerts = require("./alerts");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -22712,21 +22712,73 @@ var logout = exports.logout = /*#__PURE__*/function () {
     return _ref2.apply(this, arguments);
   };
 }();
+var signup = exports.signup = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(name, email, password, passwordConfirm) {
+    var res;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          _context3.next = 3;
+          return (0, _axios.default)({
+            method: 'POST',
+            url: 'http://192.168.56.101:5000/api/v1/users/signup',
+            data: {
+              name: name,
+              email: email,
+              password: password,
+              passwordConfirm: passwordConfirm
+            }
+          });
+        case 3:
+          res = _context3.sent;
+          if (res.data.status === 'success') {
+            (0, _alerts.showAlert)('success', 'Signed up successfully. Welcome to rUWDEL.');
+            window.setTimeout(function () {
+              location.assign('/');
+            }, 1500);
+          }
+          _context3.next = 10;
+          break;
+        case 7:
+          _context3.prev = 7;
+          _context3.t0 = _context3["catch"](0);
+          (0, _alerts.showAlert)('error', _context3.t0.response.data.message);
+        case 10:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3, null, [[0, 7]]);
+  }));
+  return function signup(_x3, _x4, _x5, _x6) {
+    return _ref3.apply(this, arguments);
+  };
+}();
 },{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/stable");
 require("regenerator-runtime/runtime");
 var _login = require("./login");
-var formElement = document.querySelector('.form');
+var formLogin = document.querySelector('.form_login');
+var formSignup = document.querySelector('.form_signup');
 var logOutButton = document.querySelector('.logout-button');
-if (formElement) formElement.addEventListener('submit', function (e) {
+var signupButton = document.querySelector('.signup-btn');
+if (formLogin) formLogin.addEventListener('submit', function (e) {
   e.preventDefault();
   var email = document.getElementById('email').value;
   var password = document.getElementById('password').value;
   (0, _login.login)(email, password);
 });
 if (logOutButton) logOutButton.addEventListener('click', _login.logout);
+if (formSignup) formSignup.addEventListener('submit', function (e) {
+  e.preventDefault();
+  var name = document.getElementById('name').value;
+  var email = document.getElementById('email').value;
+  var password = document.getElementById('password').value;
+  var passwordConfirm = document.getElementById('passwordConfirm').value;
+  (0, _login.signup)(name, email, password, passwordConfirm);
+});
 },{"core-js/stable":"../../node_modules/core-js/stable/index.js","regenerator-runtime/runtime":"../../node_modules/regenerator-runtime/runtime.js","./login":"login.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -22752,7 +22804,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "40225" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "34739" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

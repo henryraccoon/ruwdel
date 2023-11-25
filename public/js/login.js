@@ -37,3 +37,27 @@ export const logout = async () => {
     showAlert('error', 'Error logging out. Try again');
   }
 };
+
+export const signup = async (name, email, password, passwordConfirm) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: 'http://192.168.56.101:5000/api/v1/users/signup',
+      data: {
+        name,
+        email,
+        password,
+        passwordConfirm,
+      },
+    });
+
+    if (res.data.status === 'success') {
+      showAlert('success', 'Signed up successfully. Welcome to rUWDEL.');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
+  } catch (err) {
+    showAlert('error', err.response.data.message);
+  }
+};

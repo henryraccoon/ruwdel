@@ -1,0 +1,20 @@
+extends base
+
+block content
+    .signup-box
+        h2.page-title Create a new account
+
+        form.form_signup(action='/signup', method='POST')
+            label(for='name') Name:
+            input.form__input(id='name', placeholder='Your name', required)
+
+            label(for='email') Email:
+            input.form__input(type='email', id='email', name='email', placeholder='you@example.com', required)
+
+            label(for='password') Password:
+            input.form__input(type='password', id='password', name='password', placeholder='••••••••', required, minlength='8')
+
+            label(for='passwordConfirm') Confirm your password:
+            input.form__input(type='password', id='passwordConfirm', name='passwordConfirm', placeholder='••••••••', required, minlength='8')
+
+            button.signup-btn(type='submit') Create

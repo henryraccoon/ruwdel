@@ -9,5 +9,6 @@ router.use(authController.isLoggedIn);
 router.get('/', viewController.getOverview);
 router.get('/search', viewController.getSearch);
 router.get('/login', viewController.getLoginForm);
+router.get('/signup', viewController.getSignupForm);
 
 module.exports = router;
