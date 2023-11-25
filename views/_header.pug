@@ -12,6 +12,11 @@ header.header
     div.header-right
         button.about-button.button(type="button", onclick="window.location.href='#';") About
         button.api-docs-button.button(type="button", onclick="window.location.href='#';") API Docs
-        button.login-button.button(type="button", onclick="window.location.href='/login';") Log In
-        button.signup-button.button.signup-button(type="button", onclick="window.location.href='/signup';") Sign Up
+        if user
+            span= user.name.split(' ')[0] 
+            button.logout-button.button(type="button") Log Out
+            
+        else    
+            button.login-button.button(type="button", onclick="window.location.href='/login';") Log In
+            button.signup-button.button.signup-button(type="button", onclick="window.location.href='/signup';") Sign Up
 

@@ -2,7 +2,7 @@ const TotalSystem = require('../models/totalSystemModel');
 const AllSystem = require('../models/allSystemModel');
 const catchAsync = require('../utils/catchAsync');
 
-exports.getOverview = catchAsync(async (req, res) => {
+exports.getOverview = catchAsync(async (req, res, next) => {
   const totalsRu = await TotalSystem.find({ country: 'Russia' }).sort({
     equipment_type: 1,
   });
@@ -18,7 +18,7 @@ exports.getOverview = catchAsync(async (req, res) => {
   });
 });
 
-exports.getSearch = catchAsync(async (req, res) => {
+exports.getSearch = catchAsync(async (req, res, next) => {
   // // const results = await AllSystem.find({
   // //   country: 'Ukraine',
   // });
@@ -27,3 +27,9 @@ exports.getSearch = catchAsync(async (req, res) => {
     // results,
   });
 });
+
+exports.getLoginForm = (req, res, next) => {
+  res.status(200).render('login', {
+    title: 'Log into your account',
+  });
+};
