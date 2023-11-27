@@ -98,6 +98,11 @@ button.signup-button:hover {
   align-items: center;
 }
 
+.footer-links {
+  display: flex;
+  align-items: center;
+}
+
 .footer-links a {
   color: #fff;
   margin-right: 15px;
@@ -285,4 +290,104 @@ button.signup-button:hover {
 
 .alert--error {
   background-color: #ba807a;
+}
+
+/* API DOCS */
+.page-title {
+  text-align: center;
+}
+
+section {
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+h3 {
+  color: #333;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+.endpoint-highlight {
+  font-weight: bold;
+  color: #e44d26;
+}
+
+/* ABOUT */
+
+.about-section,
+.privacy-section,
+.terms-section,
+.contact-section {
+  margin-top: 20px;
+}
+
+/* Style for the contact information */
+.contact-info {
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto; /* Center the container horizontally */
+  padding: 0 20px; /* Add padding on the sides */
+}
+
+.contact-info {
+  margin: 8px 0; /* Add some spacing between contact info items */
+}
+
+.contact-info.ruwdel {
+  font-weight: bold; /* Style ruwdel contact info as bold */
+  color: #145f48; /* Change color to green */
+}
+
+.contact-info.support {
+  font-style: bold; /* Style support contact info as italic */
+  color: #145f48;
+}
+
+/* Error */
+.container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.error-section {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.error-details {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #868e96;
+}
+
+a {
+  display: block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
 }

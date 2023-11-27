@@ -1,0 +1,90 @@
+extends base
+
+block content
+    
+    h2.page-title API Documentation 
+
+    
+    section
+        
+        p This section provides an overview of the available endpoints in the rUWDEL API.
+        h3 Info Endpoints
+
+        
+        ul
+            li 
+                span.endpoint-highlight
+                    | GET api/v1/systems/totals - 
+                | Returns JSON with basic info about request and results. Inside data.totals is returned an array of total losses of each equipment type/class, separately for each country. Querry ?country= for Ukraine or Russia is available.
+            li 
+                span.endpoint-highlight
+                    | GET api/v1/systems/system/*system name* - 
+                | Returns JSON with basic info about request and results. Inside data.systems is returned an array of each individual equipment system. Querries for ?country=, ?origin=, ?status= are available.
+            li 
+                span.endpoint-highlight
+                    | GET - api/v1/systems/class/*class name* - 
+                | Returns JSON with basic info about request and results. Inside data.systems is returned an array of each individual equipment system according to class/type indicated. Querries for ?country=, ?origin=, ?status= are available. ONLY FOR REGISTERED USERS
+            li 
+                span.endpoint-highlight
+                    | GET - api/v1/systems/date?Date=*mm/dd/yyyy* - 
+                | Returns JSON with basic info about request and results. Inside data.systems is returned an array of each individual equipment system according to date indicated. Querries for ?system=, ?country=, ?origin=, ?status= are available. Date has to be indicated as a querry as well and has to be in format mm/dd/yyyy. ONLY FOR REGISTERED USERS
+
+            li 
+                span.endpoint-highlight
+                    | GET - api/v1/systems/list - 
+                | Returns JSON with basic info about request and results. Inside data.systemsToClasses is returned an array of each individual class/type of equipment and list of systems corresponding to this class/type.
+
+        h3 User/Auth Endpoints
+
+        ul 
+
+            li 
+                span.endpoint-highlight 
+                    | POST - api/v1/users/signup - 
+                | POST request to register a new user.
+
+            li 
+                span.endpoint-highlight 
+                    | POST - api/v1/users/login - 
+                | POST request to log into your account.
+
+            li 
+                span.endpoint-highlight 
+                    | PATCH - api/v1/users/updateMe - 
+                | PATCH request to update users info. Not for PASSWORDS.
+
+            li 
+                span.endpoint-highlight 
+                    | PATCH - api/v1/users/updatePassword - 
+                | PATCH request to update password.
+
+            li 
+                span.endpoint-highlight 
+                    | DELETE - api/v1/users/deleteMe - 
+                | DELETE request to remove user. Information will be effectively removed 10 days after request.
+
+            li 
+                span.endpoint-highlight 
+                    | POST - api/v1/users/forgotPassword -
+                | POST request to reset a forgotten password. Token will be sent to indicated email in this request.
+
+            li 
+                span.endpoint-highlight 
+                    | PATCH - api/v1/users/resetPassword/*token* - 
+                | PATCH request to reset password. Token received in the email has to be used during first 10 minutes.
+
+
+
+
+    section
+        h3 Limits
+        p The only limiting on the rUWDEL API is 200 request per hour, but API usage will be monitored and we might reject certain requests due to excessive usage or any suspicious behavior.
+
+
+
+    section
+        h3 Postman Documentation
+        p Explore the rUWDEL API in more detail with examples using our Postman documentation.
+
+        a(href='link_to_postman_documentation')
+         Visit Postman Documentation

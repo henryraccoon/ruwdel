@@ -1,3 +1,16 @@
+const hideAlert = () => {
+  const el = document.querySelector('.alert');
+  if (el) el.parentElement.removeChild(el);
+};
+
+const showAlert = (type, msg) => {
+  hideAlert();
+
+  const markup = `<div class="alert alert--${type}">${msg}</div>`;
+  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
+  window.setTimeout(hideAlert, 6000);
+};
+
 document.addEventListener('DOMContentLoaded', function () {
   const searchButton = document.querySelector('#btn-search');
   const systemRadio = document.querySelector('#system-radio');
@@ -80,13 +93,15 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       resultsContainer.innerHTML = '';
+      console.log(res);
+      showAlert('success', `Found ${res.data.results} results.`);
 
       res.data.data.systems.forEach((result) => {
         const resultBox = createResultBox(result);
         resultsContainer.appendChild(resultBox);
       });
     } catch (error) {
-      console.error(error);
+      showAlert('error', error.response.data.message);
     }
   });
 });

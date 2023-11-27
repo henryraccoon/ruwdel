@@ -39,3 +39,15 @@ exports.getSignupForm = (req, res, next) => {
     title: 'Create a new account',
   });
 };
+
+exports.getApiDocs = (req, res, next) => {
+  res.status(200).render('apidocs', {
+    title: 'API Documentation',
+  });
+};
+
+exports.getAbout = (req, res, next) => {
+  res.status(200).render('about', {
+    title: 'About rUWDEL',
+  });
+};

@@ -1,0 +1,15 @@
+extends base
+
+block content
+    .container
+        h2.page-title Oops! Something went wrong.
+
+        .error-section
+            p We're sorry, but there was an error processing your request.
+            p Please try again later or contact support.
+
+        .error-details
+            p Error Code: #{errorCode}
+            p Error Message: #{errorMessage}
+
+        a(href='/') Go to Home

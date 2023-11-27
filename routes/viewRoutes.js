@@ -10,5 +10,7 @@ router.get('/', viewController.getOverview);
 router.get('/search', viewController.getSearch);
 router.get('/login', viewController.getLoginForm);
 router.get('/signup', viewController.getSignupForm);
+router.get('/apidocs', viewController.getApiDocs);
+router.get('/about', viewController.getAbout);
 
 module.exports = router;
