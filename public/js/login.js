@@ -5,7 +5,7 @@ export const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'http://192.168.56.101:5000/api/v1/users/login',
+      url: '/api/v1/users/login',
       data: {
         email,
         password,
@@ -27,7 +27,7 @@ export const logout = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: 'http://192.168.56.101:5000/api/v1/users/logout',
+      url: '/api/v1/users/logout',
     });
 
     if ((res.data.status = 'success')) {
@@ -42,7 +42,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'http://192.168.56.101:5000/api/v1/users/signup',
+      url: '/api/v1/users/signup',
       data: {
         name,
         email,

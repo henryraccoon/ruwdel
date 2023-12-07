@@ -22649,7 +22649,7 @@ var login = exports.login = /*#__PURE__*/function () {
           _context.next = 3;
           return (0, _axios.default)({
             method: 'POST',
-            url: 'http://192.168.56.101:5000/api/v1/users/login',
+            url: '/api/v1/users/login',
             data: {
               email: email,
               password: password
@@ -22689,7 +22689,7 @@ var logout = exports.logout = /*#__PURE__*/function () {
           _context2.next = 3;
           return (0, _axios.default)({
             method: 'GET',
-            url: 'http://192.168.56.101:5000/api/v1/users/logout'
+            url: '/api/v1/users/logout'
           });
         case 3:
           res = _context2.sent;
@@ -22722,7 +22722,7 @@ var signup = exports.signup = /*#__PURE__*/function () {
           _context3.next = 3;
           return (0, _axios.default)({
             method: 'POST',
-            url: 'http://192.168.56.101:5000/api/v1/users/signup',
+            url: '/api/v1/users/signup',
             data: {
               name: name,
               email: email,
@@ -22804,7 +22804,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "43219" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38035" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

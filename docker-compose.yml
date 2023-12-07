@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx
+    container_name: my_nginx_container
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /home/henryraccoon/ngx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt/live/ruwdel.info/fullchain.pem:/etc/letsencrypt/live/ruwdel.info/fullchain.pem:ro
+      - /etc/letsencrypt/live/ruwdel.info/privkey.pem:/etc/letsencrypt/live/ruwdel.info/privkey.pem:ro
+      - /etc/hosts:/etc/hosts:ro
+    restart: always

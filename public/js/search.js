@@ -13,6 +13,7 @@ const showAlert = (type, msg) => {
 
 document.addEventListener('DOMContentLoaded', function () {
   const searchButton = document.querySelector('#btn-search');
+  const searchForm = document.querySelector('#searchForm');
   const systemRadio = document.querySelector('#system-radio');
   const classRadio = document.querySelector('#class-radio');
   const dateRadio = document.querySelector('#date-radio');
@@ -70,38 +71,110 @@ document.addEventListener('DOMContentLoaded', function () {
     return resultBox;
   };
 
-  searchButton.addEventListener('click', async () => {
+  let currentPage = 1;
+  const pageSize = 56;
+  let totalPages = 1;
+
+  const updateResults = async () => {
     try {
       let res = {};
       if (systemRadio.checked) {
         res = await axios({
           method: 'GET',
-          url: `http://192.168.56.101:5000/api/v1/systems/system/${input.value}`,
+          url: `/api/v1/systems/system/${input.value}`,
         });
       }
       if (classRadio.checked) {
         res = await axios({
           method: 'GET',
-          url: `http://192.168.56.101:5000/api/v1/systems/class/${input.value}`,
+          url: `/api/v1/systems/class/${input.value}`,
         });
       }
       if (dateRadio.checked) {
         res = await axios({
           method: 'GET',
-          url: `http://192.168.56.101:5000/api/v1/systems/date?Date=${input.value}`,
+          url: `/api/v1/systems/date?Date=${input.value}`,
         });
       }
 
-      resultsContainer.innerHTML = '';
-      console.log(res);
-      showAlert('success', `Found ${res.data.results} results.`);
+      const results = res.data.data.systems;
+      totalPages = Math.ceil(res.data.results / pageSize);
 
-      res.data.data.systems.forEach((result) => {
+      updatePaginationControls();
+
+      resultsContainer.innerHTML = '';
+
+      if (currentPage === 1 && res.data.results < pageSize) {
+        showAlert(
+          'success',
+          `Showing 1 to ${res.data.results} of ${res.data.results} results.`
+        );
+      } else if (currentPage === 1 && res.data.results > pageSize) {
+        showAlert(
+          'success',
+          `Showing 1 to ${pageSize} of ${res.data.results} results.`
+        );
+      } else if (currentPage > 1 && res.data.results > pageSize) {
+        showAlert(
+          'success',
+          `Showing ${pageSize * (currentPage - 1)} to ${
+            pageSize * currentPage
+          } of ${res.data.results} results.`
+        );
+      }
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      res.data.data.systems.slice(startIndex, endIndex).forEach((result) => {
         const resultBox = createResultBox(result);
         resultsContainer.appendChild(resultBox);
       });
+
+      if (results.length > pageSize) {
+        document
+          .querySelector('.pagination-controls')
+          .classList.remove('hidden');
+      }
     } catch (error) {
       showAlert('error', error.response.data.message);
+    }
+  };
+
+  const updatePaginationControls = () => {
+    const currentPageElement = document.querySelector('#current-page');
+    currentPageElement.textContent = currentPage;
+
+    const prevButton = document.querySelector('#btn-prev');
+    const nextButton = document.querySelector('#btn-next');
+
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages;
+  };
+
+  searchForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    currentPage = 1;
+    updateResults();
+  });
+  searchButton.addEventListener('click', async () => {
+    currentPage = 1;
+    updateResults();
+  });
+
+  const prevButton = document.querySelector('#btn-prev');
+  const nextButton = document.querySelector('#btn-next');
+
+  prevButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      updateResults();
+    }
+  });
+
+  nextButton.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      updateResults();
     }
   });
 });

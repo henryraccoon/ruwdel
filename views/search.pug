@@ -18,10 +18,16 @@ block content
       input(type='radio', id='date-radio' name='search-option', value='date')
       | Search by Date
 
-  .search-input-container
-    input(type='text', id='search-input', placeholder='Enter search value')
-    button(type='button', id='btn-search') Search
+  form(id='searchForm')
+    .search-input-container
+      input(type='text', id='search-input', placeholder='Enter search value')
+      button(type='button', id='btn-search') Search
+
+  .pagination-section
+    .pagination-controls.hidden
+      button(type='button', id='btn-prev') Previous
+      span.page-number(id='current-page') 1
+      button(type='button', id='btn-next') Next
 
   .results-section
-    
-    
+   

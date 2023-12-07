@@ -363,7 +363,7 @@ a:hover {
 }
 
 /* Error */
-.container {
+.container-error {
   text-align: center;
   margin-top: 50px;
 }
@@ -381,13 +381,48 @@ a:hover {
   color: #868e96;
 }
 
-a {
+.error-section a {
   display: block;
   margin-top: 20px;
   text-decoration: none;
   color: #007bff;
 }
 
-a:hover {
+.error-section a:hover {
   text-decoration: underline;
+}
+
+/* pagination */
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.pagination-controls button {
+  background-color: #555;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.page-number {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+.pagination-controls.hidden {
+  display: none;
 }

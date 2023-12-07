@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -15,6 +16,16 @@ const userRouter = require('./routes/userRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
+
+app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  next();
+});
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -48,8 +59,10 @@ app.use(mongoSanitize());
 // Data sanitization against XSS
 app.use(xss());
 
-//Prevent paarameter pollution
+//Prevent parameter pollution
 app.use(hpp());
+
+app.use(compression());
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
