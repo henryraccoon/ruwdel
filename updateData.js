@@ -2,7 +2,6 @@ const Papa = require('papaparse');
 const AllSystem = require('./models/allSystemModel');
 const TotalSystem = require('./models/totalSystemModel');
 const SystemsToClasses = require('./models/systemsToClassesModel');
-// const System = require('./models/dailySystemModel');
 const System = require('./models/dailySystemModel');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -20,7 +19,7 @@ const repo = 'Russia-Ukraine';
 
 ////////// ALLSYSTEMS
 
-const importAllSystemData = async () => {
+exports.importAllSystemData = async () => {
   try {
     const folderPath = 'data/bySystem/Raw/Full';
 
@@ -31,9 +30,6 @@ const importAllSystemData = async () => {
     const latestFile = response.data[response.data.length - 2];
 
     const dataUrl = latestFile.download_url;
-    // const filePath = `${folderPath}/${latestFile.name}`;
-
-    // const dataUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
 
     const dataResponse = await axios.get(dataUrl);
 
@@ -53,7 +49,7 @@ const importAllSystemData = async () => {
 
 ///////////////TOTALS
 
-const importTotalsData = async () => {
+exports.importTotalsData = async () => {
   try {
     const folderPath = 'data/byType';
 
@@ -64,9 +60,6 @@ const importTotalsData = async () => {
     const latestFile = response.data[response.data.length - 1];
 
     const dataUrl = latestFile.download_url;
-    // const filePath = `${folderPath}/${latestFile.name}`;
-
-    // const dataUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
 
     const dataResponse = await axios.get(dataUrl);
 
@@ -85,7 +78,7 @@ const importTotalsData = async () => {
 
 //////DAILY
 
-const importDailyData = async () => {
+exports.importDailyData = async () => {
   try {
     const folderPath = 'data/bySystem/Raw/Daily';
 
@@ -174,7 +167,7 @@ const importDailyData = async () => {
 
 // DELETE ALL DATA
 
-const deleteData = async () => {
+exports.deleteData = async () => {
   try {
     await AllSystem.deleteMany();
     await TotalSystem.deleteMany();
@@ -184,15 +177,15 @@ const deleteData = async () => {
   }
 };
 
-const updateAllTheData = async () => {
-  await mongoose
-    .connect(DB)
-    .then(() => console.log('DB connection sucessful.'));
-  await deleteData();
-  await importAllSystemData();
-  await importTotalsData();
-  await importDailyData();
-  process.exit(0);
-};
+// const updateAllTheData = async () => {
+//   await mongoose
+//     .connect(DB)
+//     .then(() => console.log('DB connection sucessful.'));
+//   await deleteData();
+//   await importAllSystemData();
+//   await importTotalsData();
+//   await importDailyData();
+//   process.exit(0);
+// };
 
-updateAllTheData();
+// updateAllTheData();
