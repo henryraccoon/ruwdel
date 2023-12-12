@@ -132,6 +132,11 @@ button.signup-button:hover {
 .overview-table {
   width: 100%; /* Adjust the width as needed */
   border-collapse: collapse;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+.country-table.mobile {
+  display: none;
 }
 
 .country-title {
@@ -425,4 +430,140 @@ a:hover {
 
 .pagination-controls.hidden {
   display: none;
+}
+* {
+  box-sizing: border-box;
+}
+
+/* Tablet styles */
+@media only screen and (min-width: 550px) and (max-width: 1024px) {
+  .header {
+    padding: 10px;
+  }
+
+  .header-left button,
+  .header-right button {
+    padding: 6px 10px;
+  }
+
+  .header-right button.signup-button {
+    margin-left: 8px;
+  }
+
+  .footer {
+    padding: 10px;
+  }
+
+  .footer-left img {
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  .footer-links a {
+    font-size: 14px;
+    margin-right: 10px;
+  }
+}
+
+/* Mobile styles */
+@media only screen and (max-width: 550px) {
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .overview-table td.column-header {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .overview-table td.loss-type {
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .header-left,
+  .header-center,
+  .header-right {
+    width: 100%;
+    text-align: center;
+  }
+
+  .header-left button,
+  .header-right button {
+    width: 39%;
+    margin-bottom: 8px;
+    font-size: 21px;
+  }
+
+  .header-right button.signup-button {
+    margin-left: 0;
+  }
+
+  .header-center img.logo {
+    max-width: 300px;
+    max-height: 300px;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .footer-left,
+  .footer-right {
+    width: 100%;
+    text-align: center;
+  }
+
+  .footer-left img {
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .footer-links a {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .overview-table {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .table-container {
+    overflow-x: auto;
+    max-width: 100%; /
+  }
+
+  .overview-table {
+    width: auto; 
+  }
+  .overview-table td {
+    max-width: 100px; 
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .country-table.mobile {
+    display: block;
+  }
+  .table-container.mobile {
+    display: none;
+  }
 }
