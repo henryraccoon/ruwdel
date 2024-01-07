@@ -10,7 +10,7 @@ const axios = require('axios');
 dotenv.config({ path: './config.env' });
 
 const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
+  'PASSWORD',
   process.env.DATABASE_PASSWORD
 );
 

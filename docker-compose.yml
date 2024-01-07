@@ -10,6 +10,21 @@ services:
     volumes:
       - /home/henryraccoon/ngx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt/live/ruwdel.info/fullchain.pem:/etc/letsencrypt/live/ruwdel.info/fullchain.pem:ro
+      - /etc/letsencrypt/live/mawe.live/fullchain.pem:/etc/letsencrypt/live/mawe.live/fullchain.pem:ro
       - /etc/letsencrypt/live/ruwdel.info/privkey.pem:/etc/letsencrypt/live/ruwdel.info/privkey.pem:ro
+      - /etc/letsencrypt/live/mawe.live/privkey.pem:/etc/letsencrypt/live/mawe.live/privkey.pem:ro
       - /etc/hosts:/etc/hosts:ro
+    restart: always
+
+  ruwdel:
+    build: /home/ec2-user/ruwdel
+    ports:
+      - '3000:3000'
+    env_file: .env
+    restart: always
+
+  mawe:
+    build: /home/ec2-user/mawe
+    ports:
+      - '4000:4000'
     restart: always
