@@ -18,6 +18,8 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
+// create event listener for trigger opening of search page with ready class query after a click on a class name in the table
+
 exports.getSearch = catchAsync(async (req, res, next) => {
   // // const results = await AllSystem.find({
   // //   country: 'Ukraine',

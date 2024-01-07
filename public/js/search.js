@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const input = document.querySelector('#search-input');
   const resultsContainer = document.querySelector('.results-section');
 
+  // add a special behind the scenes search for clickable-table feature
+
   const createResultBox = (result) => {
     const resultBox = document.createElement('div');
     resultBox.className = 'result-box';
